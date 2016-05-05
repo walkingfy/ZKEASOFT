@@ -1,0 +1,68 @@
+﻿@using System.Text.RegularExpressions
+@model Easy.Data.Pagination
+
+@{
+    Regex pageRegex = new Regex(@"p=(\d+)",RegexOptions.Compiled);
+    string currentUrl = Request.RawUrl.ToLower();
+    if (!pageRegex.IsMatch(currentUrl))
+    {
+        if (currentUrl.Contains("?"))
+        {
+            currentUrl += "&p=0";
+        }
+        else
+        {
+            currentUrl += "?p=0";
+        }
+    }
+    Func<int, string> pageFormat = index => "p=" + index;
+}
+<ul class="pagination">
+    @if (Model.PageIndex >= 1)
+    {
+        <li><a href="@pageRegex.Replace(currentUrl, pageFormat(0))">«</a></li>
+    }
+    else
+    {
+        <li class="disabled"><a href="javascript:void(0)">«</a></li>
+    }
+    @{
+        if (Model.PageIndex >= 5)
+        {
+            <li>
+                <a>...</a>
+            </li>
+        }
+        int start = Model.PageIndex - 4;
+        int end = Model.PageIndex + 4;
+        if (start < 0)
+        {
+            start = 0;
+        }
+        for (; start < Model.AllPage && start <= end; start++)
+        {
+            <li class="@(start == Model.PageIndex ? "active" : "")">
+                <a href="@pageRegex.Replace(currentUrl, pageFormat(start))">@(start+1)</a>
+            </li>
+        }
+        if (Model.AllPage-Model.PageIndex>5)
+        {
+            <li>
+                <a>...</a>
+            </li>
+        }
+    }
+
+    @if (Model.PageIndex < Model.AllPage - 1)
+    {
+        <li>
+            <a href="@pageRegex.Replace(currentUrl, pageFormat(Model.PageIndex + 1))">»</a>
+        </li>
+    }
+    else
+    {
+        <li class="disabled">
+            <a href="javascript:void(0)">»</a>
+        </li>
+    }
+</ul>

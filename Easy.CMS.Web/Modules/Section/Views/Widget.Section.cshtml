@@ -1,0 +1,20 @@
+﻿@using System.Linq
+@using Easy.CMS.Section.Models
+@model SectionWidget
+
+<div class="section">
+    @if (Model.SectionTitle.IsNotNullAndWhiteSpace())
+    {
+        <h4>@Model.SectionTitle</h4>
+    }
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (SectionGroup group in Model.Groups.OrderBy(m => m.Order))
+            {
+                <div class="@group.PercentWidth">
+                    @Html.Partial(group.PartialView, group)
+                </div>
+            }
+        </div>
+    </div>
+</div>

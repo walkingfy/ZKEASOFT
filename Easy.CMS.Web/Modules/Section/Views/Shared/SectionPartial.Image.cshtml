@@ -1,0 +1,18 @@
+﻿@using Easy.CMS.Section.Models
+@using Easy.Web.CMS
+@model SectionContentImage
+
+
+@if (Model.Href.IsNotNullAndWhiteSpace())
+{
+    <a href="@Url.PathContent(Model.Href)" target="@Html.SmartLinkTarget(Model.Href)">
+        <img src="@Url.Content(Model.ImageSrc)" alt="@Model.ImageAlt" title="@Model.ImageTitle" style="width: @(Model.Width.HasValue ? Model.Width.Value + "px" : "auto"); height: @(Model.Height.HasValue ? Model.Height.Value + "px" : "auto");" />
+    </a>
+
+}
+else
+{
+    <img src="@Url.Content(Model.ImageSrc)" alt="@Model.ImageAlt" title="@Model.ImageTitle" style="width: @(Model.Width.HasValue ? Model.Width.Value + "px" : "auto"); height: @(Model.Height.HasValue ? Model.Height.Value + "px" : "auto");" />
+}
+
+

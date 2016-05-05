@@ -1,0 +1,35 @@
+﻿@using Easy.Web.CMS
+@model Easy.CMS.Article.Models.ArticleSummaryWidget
+@{
+    if (!Model.DetailLink.IsNullOrEmpty())
+    {
+        Model.DetailLink = Url.Content(Model.DetailLink);
+    }
+}
+<div class="article-summary">
+    <div class="bs-callout @Model.Style">
+        @if (!Model.Title.IsNullOrEmpty())
+        {
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4>
+                        @Model.Title
+                    </h4>
+                    @if (Model.SubTitle.IsNotNullAndWhiteSpace())
+                    {
+                        <h5>@Model.SubTitle</h5>
+                    }
+                </div>
+                <div class="pull-right">
+                    @if (!Model.DetailLink.IsNullOrEmpty())
+                    {
+                        @Html.SmartLink(Url.PathContent(Model.DetailLink), "More »")
+                    }
+                </div>
+            </div>
+        }
+        <div class="sumary">
+            @Html.Raw(Model.Summary)
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@using System.Text.RegularExpressions
+@using Easy.Web.CMS
+@model Easy.CMS.Product.ViewModel.ProductListWidgetViewModel
+
+<div class="productlist container-fluid">
+    <div class="row">
+        @foreach (var item in Model.Products)
+        {
+            <div class="@Model.Columns">
+                <div class="thumbnail">
+                    @if (item.ImageThumbUrl.IsNotNullAndWhiteSpace())
+                    {
+                        <img alt="@item.Title" title="@item.Title" src="@Url.Content(item.ImageThumbUrl)" />
+                    }
+                    <div class="caption">
+                        <h4>
+                                 @item.Title
+                        </h4>
+                        <p class="text-muted small">
+                            @item.Description
+                        </p>
+                        @if (item.Url.IsNotNullAndWhiteSpace() || Model.DetailPageUrl.IsNotNullAndWhiteSpace())
+                        {
+                            string url = item.Url;
+                            if (url.IsNullOrWhiteSpace())
+                            {
+                                url = Url.Content(Model.DetailPageUrl) + "?id=" + item.ID;
+                            }
+                        <p class="clearfix">
+                            <a href="@url" class="btn btn-default pull-right">查看</a>
+                        </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="clearfix"></div>
+    </div>
+    
+    @if (Model.IsPageable)
+    {
+        Html.Pagin(Model.Page);
+    }
+</div>
+
+
+

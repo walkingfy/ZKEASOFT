@@ -1,0 +1,28 @@
+﻿@using System.Text.RegularExpressions
+@model Easy.CMS.Article.ViewModel.ArticleTypeWidgetViewModel
+@{
+    Regex categoryRegex = new Regex(@"ac=(\d+)", RegexOptions.Compiled);
+    string currentUrl = Url.Content(Model.TargetPage);
+    if (!categoryRegex.IsMatch(currentUrl))
+    {
+        if (currentUrl.Contains("?"))
+        {
+            currentUrl += "&ac=0";
+        }
+        else
+        {
+            currentUrl += "?ac=0";
+        }
+    }
+}
+<div class="article-category">
+    <div class="list-group">
+        @if (Model.ArticleTypes != null)
+        {
+            foreach (var item in Model.ArticleTypes)
+            {
+                <a href="@categoryRegex.Replace(currentUrl, "ac=" + item.ID)" class="list-group-item @(item.ID == Model.ArticleTypeID ? "active" : "")">@item.Title</a>
+            }
+        }
+    </div>
+</div>

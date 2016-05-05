@@ -1,0 +1,84 @@
+﻿@using Easy.CMS.Common.Models
+@using Easy.Web.CMS
+@model Easy.CMS.Common.ViewModels.NavigationWidgetViewModel
+@{
+    NavigationEntity homePage = Model.Navigations.FirstOrDefault(m => m.ParentId == "#");
+    if (homePage == null)
+    {
+        return;
+    }
+}
+@helper DropDown(IEnumerable<NavigationEntity> items)
+{
+    if (items != null && items.Any())
+    {
+        <ul class="dropdown-menu">
+            @foreach (NavigationEntity child in items)
+            {
+                IEnumerable<NavigationEntity> children = Model.Navigations.Where(m => m.ParentId == child.ID);
+                if (children.Any())
+                {
+
+                    <li class="dropdown hoveropen">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@child.Title <b class="caret right"></b></a>
+                        @DropDown(children)
+                    </li>
+                }
+                else
+                {
+                    <li class="@(child.IsCurrent ? "active" : "")">
+                        @Html.SmartLink(Url.PathContent(child.Url), child.Title)
+                    </li>
+                }
+            }
+        </ul>
+    }
+}
+<div class="navigation">
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @if (Model.Widget.Logo.IsNotNullAndWhiteSpace() || Model.Widget.Title.IsNotNullAndWhiteSpace())
+                {
+                    <a class="navbar-brand" href="~/">
+                        @if (Model.Widget.Logo.IsNotNullAndWhiteSpace())
+                        {
+                            <img src="@Url.Content(Model.Widget.Logo)" alt="@Model.Widget.Title" class="logo" />
+                        }
+                        else
+                        {
+                            @Model.Widget.Title
+                        }
+                    </a>
+                }
+            </div>
+            <div class="navbar-collapse collapse navbar-responsive-collapse">
+                <ul class="nav navbar-nav">
+                    @foreach (NavigationEntity item in Model.Navigations.Where(m => m.ParentId == "#"))
+                    {
+                        if (Model.Navigations.Any(m => m.ParentId == item.ID))
+                        {
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@item.Title <b class="caret"></b></a>
+                                @DropDown(Model.Navigations.Where(m => m.ParentId == item.ID))
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="@(item.IsCurrent ? "active" : "")">
+                                @Html.SmartLink(Url.PathContent(item.Url), item.Title)
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
